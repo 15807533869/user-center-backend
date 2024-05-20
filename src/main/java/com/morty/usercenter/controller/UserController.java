@@ -10,11 +10,11 @@ import com.morty.usercenter.model.domain.request.UserLoginRequest;
 import com.morty.usercenter.model.domain.request.UserRegisterRequest;
 import com.morty.usercenter.service.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +29,9 @@ import static com.morty.usercenter.contant.UserConstant.USER_LOGIN_STATIE;
  */
 @RestController
 @RequestMapping("/user")
+// 跨域处理
+//@CrossOrigin(origins = {"http://47.106.217.210"}, allowCredentials = "true")
+@CrossOrigin
 public class UserController {
 
     @Resource
@@ -102,6 +105,15 @@ public class UserController {
         List<User> userList = userService.list(queryWrapper);
         List<User> list = userList.stream().map(user -> userService.getSafetyUser(user)).collect(Collectors.toList());
         return ResultUtils.success(list);
+    }
+
+    @GetMapping("/search/tags")
+    public BaseResponse<List<User>> searchUsersByTags(@RequestParam(required = false) List<String> tagNameList) {
+        if (CollectionUtils.isEmpty(tagNameList)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        List<User> userList = userService.searchUsersByTags(tagNameList);
+        return ResultUtils.success(userList);
     }
 
     @PostMapping("/delete")

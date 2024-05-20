@@ -1,8 +1,11 @@
 package com.morty.usercenter.service;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import com.morty.usercenter.model.domain.User;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -74,4 +77,12 @@ class UserServiceTest {
         result = userService.userRegister(userAccount, userPassword, checkPassword, planetCode);
         Assertions.assertEquals(-1, result);
     }
+
+    @Test
+    public void searchUsersByTags() {
+        List<String> tagNameList = Arrays.asList("java", "python");
+        List<User> userList = userService.searchUsersByTags(tagNameList);
+        Assert.assertNotNull(userList);
+    }
+
 }
